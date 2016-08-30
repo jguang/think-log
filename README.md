@@ -45,3 +45,39 @@ export default {
 };
 
 ```
+
+# 接口
+
+在 req 的 http 中怎加了
+
+    this.http.logger('trace', ' xxxxx')
+    this.http.addLog('xxxxxxx') // 对应 Info 日志，其值可为字符串、数组和对象
+
+、、、
+
+'use strict';
+
+import Base from './base.js';
+
+export default class extends Base {
+  /**
+   * index action
+   * @return {Promise} []
+   */
+  indexAction(){
+    this.http.logger('trace', "testtesttest");
+
+    this.http.addLog(['aaa','bbbb']);
+
+    this.http.addLog({
+        "key" : "value",
+        "key1" : "value1"
+    });
+
+    this.http.logger('info', "testdemo");
+
+    //auto render template file index_index.html
+    return this.display();
+  }
+}
+、、、

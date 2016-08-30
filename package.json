@@ -1,6 +1,6 @@
 {
   "name": "think-log",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "log4js middleware for thinkjs",
   "main": "index.js",
   "scripts": {
@@ -20,7 +20,7 @@
   "bugs": {
     "url": "https://github.com/jguang/think-log/issues"
   },
-  "homepage": "https://github.com/jguang/think-logger#readme",
+  "homepage": "https://github.com/jguang/think-log#readme",
    "dependencies": {
       "log4js": "^0.6.29"
   }

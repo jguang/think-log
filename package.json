@@ -1,0 +1,27 @@
+{
+  "name": "think-log",
+  "version": "1.0.0",
+  "description": "log4js middleware for thinkjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jguang/think-logger.git"
+  },
+  "keywords": [
+    "thinkjs",
+    "thinkjs-middleware",
+    "log4js"
+  ],
+  "author": "jguang001@gmail.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jguang/think-logger/issues"
+  },
+  "homepage": "https://github.com/jguang/think-logger#readme",
+   "dependencies": {
+      "log4js": "^0.6.29"
+  }
+}

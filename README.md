@@ -53,8 +53,9 @@ export default {
     this.http.logger('trace', ' xxxxx')
     this.http.addLog('xxxxxxx') // 对应 Info 日志，其值可为字符串、数组和对象
 
-、、、
 
+
+```
 'use strict';
 
 import Base from './base.js';
@@ -80,4 +81,4 @@ export default class extends Base {
     return this.display();
   }
 }
-、、、
+```

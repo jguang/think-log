@@ -109,6 +109,7 @@ exports.routeParse = function(think) {
 
 exports.responseEnd = function(think) {
     return function(http) {
+        http.addLog("RESPONSE_STATUS", http.res.statusCode);
         http.addLog("RESPONSE_END", "OK");
         http._loggerAry.length && http.logger(http._loggerAry);
     }

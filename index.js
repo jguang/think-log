@@ -96,6 +96,7 @@ exports.routeParse = function(think) {
             var log = format.replace(/\%([\w]+)/gi, function (str, $1) {
                 return logObj[$1];
             });
+            type = type.toLowerCase();
             if ('warn error fatal'.indexOf(type) < 0) {
                 logger[type] && logger[type](log);
             }

@@ -1,6 +1,6 @@
 {
   "name": "think-log",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "log4js middleware for thinkjs",
   "main": "index.js",
   "scripts": {

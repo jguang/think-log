@@ -39,7 +39,7 @@ export default {
     logs: {
         level: 'TRACE', // TRACE  DEBUG INFO WARN ERROR FATAL
         path: think.ROOT_PATH + '/logs/',
-        format: 'logId[%logId] ip[%ip] time[%time] method[%method] host[%host]' +
+        format: 'logId[%logId] ip[%ip] xRealIp[%xRealIp] time[%time] method[%method] host[%host] ' +
         'uri[%uri] refer[%refer] - [%S] - module[%module] controller[%controller] action[%action] ua[%ua]'
     }
 };

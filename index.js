@@ -69,40 +69,55 @@ exports.routeParse = function(think) {
         var logStr = function (key, value) {
             var str = [];
             if (think.isObject(key)) {
-                for (var k in key) {
-                    str.push(logStr(k, key[k]));
-                }
+                // for (var k in key) {
+                //     str.push(logStr(k, key[k]));
+                // }
+                return JSON.stringify(key);
             }
             else if (think.isArray(key)) {
-                str = str.concat(key);
+                //str = str.concat(key);
+                // key.forEach(function(value) {
+                //     str.push(think.isObject(value) ? '[' + logStr(value) + ']' : logStr(value));
+                // });
+
+                return JSON.stringify(key);
             }
             else if (value !== undefined) {
-                str.push(key + '=' + (think.isObject(value) ? '[' + logStr(value) + ']' : value));
+                str.push(key + '=' + (think.isObject(value) ? '[' + logStr(value) + ']' : logStr(value) ));
             }
             else {
                 str.push(key);
             }
-            return str.join('; ');
+            return str.join(';');
         };
         http.addLog = function (key, value) {
-            http._loggerAry.push(logStr(key, value));
+            try {
+                http._loggerAry.push(logStr(key, value));
+            } catch(e) {
+                console.log(e);
+            }
+            
         };
         http.logger = function (type, logInfo) {
-            logObj.time = Date.now() - http.startTime + 'ms';
-            if (logInfo === undefined) {
-                logInfo = type;
-                type = 'info';
-            }
-            logObj.S = logStr(logInfo);
-            var log = format.replace(/\%([\w]+)/gi, function (str, $1) {
-                return logObj[$1];
-            });
-            type = type.toLowerCase();
-            if ('warn error fatal'.indexOf(type) < 0) {
-                logger[type] && logger[type](log);
-            }
-            else {
-                loggerWf[type] && loggerWf[type](log);
+            try {
+                logObj.time = Date.now() - http.startTime + 'ms';
+                if (logInfo === undefined) {
+                    logInfo = type;
+                    type = 'info';
+                }
+                logObj.S = logStr(logInfo);
+                var log = format.replace(/\%([\w]+)/gi, function (str, $1) {
+                    return logObj[$1];
+                });
+                type = type.toLowerCase();
+                if ('warn error fatal'.indexOf(type) < 0) {
+                    logger[type] && logger[type](log);
+                }
+                else {
+                    loggerWf[type] && loggerWf[type](log);
+                }
+            } catch(e) {
+                console.log(e);
             }
 
         };
@@ -113,6 +128,6 @@ exports.responseEnd = function(think) {
     return function(http) {
         http.addLog("RESPONSE_STATUS", http.res.statusCode);
         http.addLog("RESPONSE_END", "OK");
-        http._loggerAry.length && http.logger(http._loggerAry);
+        http._loggerAry.length && http.logger(http._loggerAry.join('; '));
     }
 };

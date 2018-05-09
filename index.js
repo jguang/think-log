@@ -4,6 +4,38 @@ var path = require('path');
 
 var logInit = false;
 
+var rewriteLog = function(think,http){
+    const thinklog = think.log;
+    think.log = function (msg, type, showTime) {
+        console.log(type);
+        var logsConfig = http.config('logs');
+        var recordConsole = logsConfig.recordConsole;
+        var isHave = false;
+        for (i in recordConsole) {
+            if (recordConsole[i] == type) {
+                isHave = true;
+            }
+        }
+        
+        var recordMsg = '';
+        if (think.isString(msg)) {
+            recordMsg = msg;
+        } else if (think.isObject(msg) || think.isArray(msg)) {
+            recordMsg = JSON.stringify(msg);
+        } else {
+            recordMsg = 'Function';
+        }
+
+        if (isHave) {
+            let time = Date.now() - showTime;
+            var recordMsg = msg + ' ' + time + 'ms';
+            http.addLog('console',recordMsg);
+        }
+        thinklog(msg, type, showTime)
+    }
+}
+
+
 exports.reqStart = function(think) {
     return function(http) {
         if (!logInit) {
@@ -48,6 +80,7 @@ exports.reqStart = function(think) {
 
 exports.routeParse = function(think) {
     return function(http) {
+        var logsConfig = http.config('logs');
         var logger = log4js.getLogger(http.module);
         var loggerWf = log4js.getLogger(http.module + '-wf');
         var format = http.config('logs').format;
@@ -121,6 +154,10 @@ exports.routeParse = function(think) {
             }
 
         };
+        var isRewriteLog = logsConfig.recordConsole;
+        if (isRewriteLog) {
+            rewriteLog(think,http);
+        }
     }
 };
 

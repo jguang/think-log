@@ -39,6 +39,7 @@ export default {
     logs: {
         level: 'TRACE', // TRACE  DEBUG INFO WARN ERROR FATAL
         path: think.ROOT_PATH + '/logs/',
+        recordConsole: ["SQL"], // 选择要记录的think.log()相关类型的数据
         format: 'logId[%logId] ip[%ip] xRealIp[%xRealIp] time[%time] method[%method] host[%host] ' +
         'uri[%uri] refer[%refer] - [%S] - module[%module] controller[%controller] action[%action] ua[%ua]'
     }

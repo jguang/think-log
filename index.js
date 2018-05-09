@@ -1,13 +1,11 @@
 var log4js = require('log4js');
 var path = require('path');
 
-
 var logInit = false;
 
-var rewriteLog = function(think,http){
+var rewriteLog = function(think, http) {
     const thinklog = think.log;
-    think.log = function (msg, type, showTime) {
-        console.log(type);
+    think.log = function(msg, type, showTime) {
         var logsConfig = http.config('logs');
         var recordConsole = logsConfig.recordConsole;
         var isHave = false;
@@ -16,7 +14,7 @@ var rewriteLog = function(think,http){
                 isHave = true;
             }
         }
-        
+
         var recordMsg = '';
         if (think.isString(msg)) {
             recordMsg = msg;
@@ -29,12 +27,11 @@ var rewriteLog = function(think,http){
         if (isHave) {
             let time = Date.now() - showTime;
             var recordMsg = msg + ' ' + time + 'ms';
-            http.addLog('console',recordMsg);
+            http.addLog('console', recordMsg);
         }
-        thinklog(msg, type, showTime)
-    }
-}
-
+        thinklog(msg, type, showTime);
+    };
+};
 
 exports.reqStart = function(think) {
     return function(http) {
@@ -43,7 +40,7 @@ exports.reqStart = function(think) {
             var modules = think.module;
             var appenders = [];
             var levels = {};
-            modules.forEach(function (module) {
+            modules.forEach(function(module) {
                 var paths = path.join(logsConfig.path, module, path.sep);
                 think.mkdir(paths);
                 // 普通日志
@@ -75,7 +72,7 @@ exports.reqStart = function(think) {
             });
             logInit = true;
         }
-    }
+    };
 };
 
 exports.routeParse = function(think) {
@@ -99,39 +96,41 @@ exports.routeParse = function(think) {
         logObj.cookie = http.req.headers.cookie;
         logObj.ua = http.req.headers['user-agent'];
         http._loggerAry = [];
-        var logStr = function (key, value) {
+        var logStr = function(key, value) {
             var str = [];
             if (think.isObject(key)) {
                 // for (var k in key) {
                 //     str.push(logStr(k, key[k]));
                 // }
                 return JSON.stringify(key);
-            }
-            else if (think.isArray(key)) {
+            } else if (think.isArray(key)) {
                 //str = str.concat(key);
                 // key.forEach(function(value) {
                 //     str.push(think.isObject(value) ? '[' + logStr(value) + ']' : logStr(value));
                 // });
 
                 return JSON.stringify(key);
-            }
-            else if (value !== undefined) {
-                str.push(key + '=' + (think.isObject(value) ? '[' + logStr(value) + ']' : logStr(value) ));
-            }
-            else {
+            } else if (value !== undefined) {
+                str.push(
+                    key +
+                        '=' +
+                        (think.isObject(value)
+                            ? '[' + logStr(value) + ']'
+                            : logStr(value))
+                );
+            } else {
                 str.push(key);
             }
             return str.join(';');
         };
-        http.addLog = function (key, value) {
+        http.addLog = function(key, value) {
             try {
                 http._loggerAry.push(logStr(key, value));
-            } catch(e) {
+            } catch (e) {
                 console.log(e);
             }
-            
         };
-        http.logger = function (type, logInfo) {
+        http.logger = function(type, logInfo) {
             try {
                 logObj.time = Date.now() - http.startTime + 'ms';
                 if (logInfo === undefined) {
@@ -139,32 +138,30 @@ exports.routeParse = function(think) {
                     type = 'info';
                 }
                 logObj.S = logStr(logInfo);
-                var log = format.replace(/\%([\w]+)/gi, function (str, $1) {
+                var log = format.replace(/\%([\w]+)/gi, function(str, $1) {
                     return logObj[$1];
                 });
                 type = type.toLowerCase();
                 if ('warn error fatal'.indexOf(type) < 0) {
                     logger[type] && logger[type](log);
-                }
-                else {
+                } else {
                     loggerWf[type] && loggerWf[type](log);
                 }
-            } catch(e) {
+            } catch (e) {
                 console.log(e);
             }
-
         };
         var isRewriteLog = logsConfig.recordConsole;
         if (isRewriteLog) {
-            rewriteLog(think,http);
+            rewriteLog(think, http);
         }
-    }
+    };
 };
 
 exports.responseEnd = function(think) {
     return function(http) {
-        http.addLog("RESPONSE_STATUS", http.res.statusCode);
-        http.addLog("RESPONSE_END", "OK");
+        http.addLog('RESPONSE_STATUS', http.res.statusCode);
+        http.addLog('RESPONSE_END', 'OK');
         http._loggerAry.length && http.logger(http._loggerAry.join('; '));
-    }
+    };
 };

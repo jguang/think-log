@@ -1,10 +1,10 @@
 var log4js = require('log4js');
 var path = require('path');
+const thinklog = think.log;
 
 var logInit = false;
 
 var rewriteLog = function(think, http) {
-    const thinklog = think.log;
     think.log = function(msg, type, showTime) {
         var logsConfig = http.config('logs');
         var recordConsole = logsConfig.recordConsole;
